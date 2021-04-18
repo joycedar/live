@@ -13,6 +13,5 @@ from web.interceptors.AuthInterceptor import  *
 app.register_blueprint( route_loginAndlogout,url_prefix = "/" )
 app.register_blueprint( route_static,url_prefix = "/static" )
 app.register_blueprint( route_admin,url_prefix = "/admin" )
-app.register_blueprint( route_user,url_prefix = "/user" )
 
 

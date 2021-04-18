@@ -4,7 +4,6 @@ from common.libs.Helper import ( ops_render )
 from common.libs.UrlManager import ( UrlManager )
 from application import app,db
 from  common.models.User import User
-from common.models.Admin import Admin
 from common.libs.user.UserService import ( UserService )
 from common.libs.Helper import ( ops_render )
 from common.libs.UrlManager import ( UrlManager )

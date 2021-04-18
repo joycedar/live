@@ -3,7 +3,6 @@ from common.libs.Helper import ops_render,iPagination,getCurrentDate
 from common.libs.Helper import ( ops_render )
 from common.libs.UrlManager import ( UrlManager )
 from application import app,db
-from common.models.Admin import Admin
 from common.models.User import User
 from common.models.ticket import  Ticket
 from common.models.TrainInfo import TrainInfo
