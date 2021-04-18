@@ -171,12 +171,12 @@ def getAllUserListForRecommend():
         for user in userList :
             print(user)
             targetUserInfoList.append({
-                'nickName': user.nickname,
+                'name': user.nickname,
                 'introduction': user.introduction,
-                'avatar': user.avatar
+                'avatarUrl': user.avatar
             })
     else :
-        resp_data['list'] = targetUserInfoList
+        resp_data['data'] = targetUserInfoList
     return jsonify(resp_data)
 
 #获取关注页面的人
@@ -194,11 +194,11 @@ def getFollowListById():
     for followerUid in followerUids:
         follower = User.query.filter_by(uid=followerUid).first()
         targetFollowList.append({
-            'nickName':follower.nickname,
+            'name':follower.nickname,
             'introduction':follower.introduction,
-            'avatar':follower.avatar
+            'avatarUrl':follower.avatar
         })
-    resp_data['list'] = targetFollowList
+    resp_data['data'] = targetFollowList
     return jsonify(resp_data)
 
 
@@ -217,11 +217,11 @@ def getFansListById():
     for followerUid in fansUids:
         follower = User.query.filter_by(uid=followerUid).first()
         targetFansList.append({
-            'nickName':follower.nickname,
+            'name':follower.nickname,
             'introduction':follower.introduction,
-            'avatar':follower.avatar
+            'avatarUrl':follower.avatar
         })
-    resp_data['list'] = targetFansList
+    resp_data['data'] = targetFansList
     return jsonify(resp_data)
 
 
@@ -243,7 +243,7 @@ def getAllRoomList():
         for user in roomWithUrlList:
            # if follower.liveRoom == None:
            roomList.append({
-               'nickName':user.nickname,
+               'name':user.nickname,
                'roomImage':user.roomImage,
                'roomUrl':user.roomUrl,
                'roomName':user.roomName
@@ -253,11 +253,11 @@ def getAllRoomList():
         resp_data['msg']= "not live Room at all "
         return resp_data
 
-    resp_data['list'] = roomList
+    resp_data['data'] = roomList
     return jsonify(resp_data)
 
 
-
+#获取关注人的房间列表
 @route_admin.route("/getFollwerRoomListById", methods=["GET", "POST"])
 def getFollwerRoomListById():
     resp_data = {}
@@ -286,8 +286,8 @@ def getFollwerRoomListById():
             })
 
     if targetFollowInfoList:
-        resp_data = {'code': 200, 'msg': '操作成功', 'data': {}}
-        resp_data['list'] = targetFollowInfoList
+        resp_data = {'code': 200, 'msg': 'sucuess', 'data': {}}
+        resp_data['data'] = targetFollowInfoList
     else:
         resp_data['code'] = 201
         resp_data['msg']= "not follower's live Room at all "
