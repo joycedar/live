@@ -114,10 +114,9 @@ def getUserInfoById():
         'name':userList.nickname,
         'fansCount':userList.fansNumber,
         'followsCount':userList.followNumber,
-        'fansCount':userList.fansNumber
     }
 
-    resp_data['list'] = list
+    resp_data['data'] = list
 
     if not userList:
         resp_data['code'] = 201
