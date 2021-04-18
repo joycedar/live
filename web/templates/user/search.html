@@ -1,0 +1,74 @@
+{% extends "common/layout_main_user.html" %}
+{% block content %}
+<div class="row m-t  user_ticketSearch_wrap">
+    <div class="col-lg-12">
+        <h2 class="text-center">车票信息查询</h2>
+        <div class="form-horizontal m-t m-b">
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">日期:</label>
+                <div class="col-lg-10">
+                    <input type="date" name="date" class="form-control" placeholder="请输入日期~~"
+                           value="">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-10 control-label ">座位类别</label>
+                    <select name="seatCategory" >
+                      <option value="一等座">一等座</option>
+                      <option value="二等座">二等座</option>
+                      <option value="软卧">软卧</option>
+                      <option value="硬卧">硬卧</option>
+                </select>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-10 control-label">火车类别:</label>
+                    <select name="category" >
+                      <option value="一等座">火车</option>
+                      <option value="二等座">动车</option>
+                      <option value="软卧">特快车</option>
+                      <option value="硬卧">绿皮车</option>
+                </select>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-0 control-label">发车站:</label>
+                    <select name="fromStation" default="">
+                      <option value="北京">北京</option>
+                      <option value="上海">上海</option>
+                      <option value="深圳">深圳</option>
+                      <option value="新疆">新疆</option>
+                </select>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-0 control-label">终点站:</label>
+                    <select name="terminal" default="">
+                      <option value="北京">北京</option>
+                      <option value="上海">上海</option>
+                      <option value="深圳">深圳</option>
+                      <option value="新疆">新疆</option>
+                </select>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <div class="col-lg-4 col-lg-offset-2">
+                    <button class="btn btn-w-m btn-outline btn-primary search">查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{{ buildStaticUrl('/js/user/search.js') }}"></script>
+{% endblock %}

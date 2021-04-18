@@ -1,0 +1,114 @@
+{% extends "common/layout_main_user.html" %}
+{% block content %}
+{% include "common/tab_trainInfoSearch.html" %}
+<div class="row">
+    <div class="col-lg-12">
+        <form class="form-inline user_ticketSearch_wrap">
+            <div class="row m-t p-w-m">
+
+                <h2 class="text-center">车票信息查询</h2>
+
+            <div class="form-horizontal m-t m-b"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-1 control-label">日期:</label>
+                <div class="col-lg-10">
+                    <input type="date" name="date" class="form-control" placeholder="请输入日期~~"
+                           value="">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">类别:</label>
+                    <select name="category" >
+                      <option value="火车">火车</option>
+                      <option value="动车">动车</option>
+                      <option value="特快车">特快车</option>
+                      <option value="绿皮车">绿皮车</option>
+                </select>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">发车站:</label>
+                    <select name="fromStation" default="">
+                      <option value="北京">北京</option>
+                      <option value="上海">上海</option>
+                      <option value="深圳">深圳</option>
+                      <option value="新疆">新疆</option>
+                </select>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label ">终点站:</label>
+                    <select name="terminal" default="">
+                      <option value="北京">北京</option>
+                      <option value="上海">上海</option>
+                      <option value="深圳">深圳</option>
+                      <option value="新疆">新疆</option>
+                </select>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                 <button type="submit" class="btn btn-primary search">
+                                <i class="fa fa-search"></i>搜索
+                 </button>
+            </div>
+        </div>
+        </form>
+        <table class="table table-bordered m-t">
+            <thead>
+                <th>车次</th>
+                <th>发车时间</th>
+                <th>日期</th>
+                <th>始发站</th>
+                <th>终点站</th>
+                <th>座位类型</th>
+                <th>剩余一等座</th>
+                <th>剩余二等座</th>
+                <th>剩余硬卧</th>
+                <th>剩余软卧</th>
+                <th>订购</th>
+            </thead>
+            <tr>
+            <tbody>
+            {% if list %}
+                {% for item in list %}
+                <td>{{ item.id  }}</td>
+                <td>{{ item.leaveTime }}</td>
+                <td>{{ item.date  }}</td>
+                <td>{{ item.fromStation  }}</td>
+                <td>{{ item.terminal  }}</td>
+                <td>{{ item.category  }}</td>
+                <td>{{ item.restFirstClassSeat}}</td>
+                <td>{{ item.restSecondClassSeat}}</td>
+                <td>{{ item.restHardSeat}}</td>
+                <td>{{ item.restSoftSeat}}</td>
+                <td>
+                    <a href="{{ buildUrl('/user/ticketBook' ) }}?id={{ item.id  }}">
+                        <i class="fa fa-hand-o-right fa-lg"></i>
+                    </a>
+                </td>
+            </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="6">未查询到符合条件的车次</td></tr>
+            {% endif %}
+            </tbody>
+
+        </table>
+        <!--分页代码已被封装到统一模板文件中-->
+        {% include 'common/pagenation.html' %}
+    </div>
+</div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script src="{{ buildStaticUrl('/js/user/search.js') }}"></script>
+{% endblock %}

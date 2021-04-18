@@ -1,0 +1,104 @@
+{% extends "common/layout_main_admin.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <form class="form-inline wrap_ticketList">
+            <div class="row m-t p-w-m">
+
+                <div class="form-group">
+                    <select name="status" class="form-control inline">
+                        <option value="-1">请选择状态</option>
+                        {% for tmp_key in status_mapping %}
+                        <option value="{{ tmp_key }}" {% if tmp_key == search_con['status']  %} selected {% endif %}>{{  status_mapping[ tmp_key ] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" name="mix_kw" placeholder="请输入搜索内容" class="form-control" value="{{ search_con['mix_kw'] }}">
+                        <input type="hidden" name="p" value="{{ search_con['p'] }}">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary search">
+                                <i class="fa fa-search"></i>搜索
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <a class="btn btn-w-m btn-outline btn-primary pull-right"
+                       href="{{ buildUrl('/admin/trainInfoSet') }}">
+                        <i class="fa fa-plus"></i>添加车票信息
+                    </a>
+                </div>
+            </div>
+
+
+        </form>
+       <table class="table table-bordered m-t">
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>身份证</th>
+                <th>名字</th>
+                <th>车次</th>
+                <th>出发时间</th>
+                <th>日期</th>
+                <th>出发站</th>
+                <th>终点站</th>
+                <th>价格</th>
+                <th>购买日期</th>
+                <th>购买时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if list %}
+                {% for item in list %}
+            <tr>
+                <td>{{ item.id  }}</td>
+                <td>{{ item.identification }}</td>
+                <td>{{ item.name  }}</td>
+                <td>{{ item.trainId  }}</td>
+                <td>{{ item.leaveTime  }}</td>
+                <td>{{ item.date  }}</td>
+                <td>{{ item.fromStation  }}</td>
+                <td>{{ item.terminal  }}</td>
+                <td>{{ item.seatCategory  }}</td>
+                <td>{{ item.price  }}</td>
+                <td>{{ item.buyDate  }}</td>
+                <td>{{ item.buyTime  }}</td>
+                <td>
+                     <a href="{{ buildUrl('/admin/ticketChange' ) }}?id={{ item.id  }}">
+                        <i class="fa fa-eye fa-lg"></i>
+                    </a>
+                    {%  if item.status == 0 %}
+                    <a class="m-l remove" href="javascript:void(0);" data="{{ item.id  }}">
+                        <i class="fa fa-trash fa-lg"></i>
+                    </a>
+                    {% else %}
+                       <a class="m-l recover" href="javascript:void(0);" data="{{ item.id  }}">
+                        <i class="fa fa-rotate-left fa-lg"></i>
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="12">暂无数据~~</td></tr>
+            {% endif %}
+            </tbody>
+        </table>
+        <!--分页代码已被封装到统一模板文件中-->
+        {% include 'common/pagenation.html' %}
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{{ buildStaticUrl('/js/admin/ticketOps.js') }}"></script>
+<script src="{{ buildStaticUrl('/js/admin/ticketList.js') }}"></script>
+{% endblock %}

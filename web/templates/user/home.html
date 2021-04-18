@@ -1,0 +1,46 @@
+{% extends "common/layout_main_user.html" %}
+{% block content %}
+{% include "common/tab_trainInfoSearch.html" %}
+<div class="row">
+    <div class="col-lg-12">
+        <table class="table table-bordered m-t">
+            <thead>
+                <th>车次</th>
+                <th>发车时间</th>
+                <th>日期</th>
+                <th>始发站</th>
+                <th>终点站</th>
+                <th>座位类型</th>
+                <th>订购</th>
+            </thead>
+            <tr>
+            <tbody>
+            {% if list %}
+                {% for item in list %}
+                <td>{{ item.id  }}</td>
+                <td>{{ item.leaveTime }}</td>
+                <td>{{ item.date  }}</td>
+                <td>{{ item.fromStation  }}</td>
+                <td>{{ item.terminal  }}</td>
+                <td>{{ item.category  }}</td>
+                <td>
+                    <a href="{{ buildUrl('/user/ticketBook' ) }}?id={{ item.id  }}">
+                        <i class="fa fa-hand-o-right fa-lg"></i>
+                    </a>
+                </td>
+            </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="6">为查询到符合条件的车次</td></tr>
+            {% endif %}
+            </tbody>
+
+        </table>
+        <!--分页代码已被封装到统一模板文件中-->
+        {% include 'common/pagenation.html' %}
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{{ buildStaticUrl('/js/user/search.js') }}"></script>
+{% endblock %}

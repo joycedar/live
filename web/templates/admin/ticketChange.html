@@ -1,0 +1,103 @@
+{% extends "common/layout_main_admin.html" %}
+{% block content %}
+{% include "common/tab_user.html" %}
+<div class="row m-t   admin_ticketChange_wrap">
+    <div class="col-lg-12">
+        <h2 class="text-center">改签</h2>
+        <div class="form-horizontal m-t m-b">
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">票编号:</label>
+                <div class="col-lg-10">
+                    <input type="text" name="id" class="form-control" placeholder="" value="{{ info.id }}"
+                           value="{{ info.date }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">车次:</label>
+                <div class="col-lg-10">
+                    <input type="text" name="trainId" class="form-control" placeholder="" value="{{ info.trainId }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">座位类型</label>
+                <div class="col-lg-10">
+                <select name="seatCategory">
+                    <option value="" selected disabled hidden>请选择</option>
+                  <option value="一等座"{% if info.seatCategory=="一等座" %} selected="selected"{% endif %}>一等座</option>
+                  <option value="二等座"{% if info.seatCategory=="二等座" %} selected="selected"{% endif %}>二等座</option>
+                  <option value="硬卧"{% if info.seatCategory=="硬卧" %} selected="selected"{% endif %}>硬卧</option>
+                  <option value="软卧"{% if info.seatCategory=="软卧" %} selected="selected"{% endif %}>软卧</option>
+                </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">日期:</label>
+                <div class="col-lg-10">
+                    <input type="date" name="date" class="form-control" placeholder=""
+                           value="{{ info.date }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">发车时间:</label>
+                <div class="col-lg-10">
+                    <input type="time" name="leaveTime" class="form-control" placeholder="" value="{{ info.leaveTime }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">发车站:</label>
+                    <select name="fromStation" default="{{info.fromStation}}">
+                        <option value="北京"{% if info.fromStation=="北京" %} selected="selected"{% endif %}>北京</option>
+                      <option value="上海"{% if info.fromStation=="上海" %} selected="selected"{% endif %}>上海</option>
+                      <option value="深圳"{% if info.fromStation=="深圳" %} selected="selected"{% endif %}>深圳</option>
+                      <option value="新疆"{% if info.fromStation=="新疆" %} selected="selected"{% endif %}>新疆</option>
+                </select>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">终点站:</label>
+                    <select name="termianl" default="{{info.termianl}}">
+                      <option value="北京"{% if info.terminal=="北京" %} selected="selected"{% endif %}>北京</option>
+                      <option value="上海"{% if info.terminal=="上海" %} selected="selected"{% endif %}>上海</option>
+                      <option value="深圳"{% if info.terminal=="深圳" %} selected="selected"{% endif %}>深圳</option>
+                      <option value="新疆"{% if info.terminal=="新疆" %} selected="selected"{% endif %}>新疆</option>
+                </select>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+
+
+
+            <div class="form-group">
+                <div class="col-lg-4 col-lg-offset-2">
+                    <button class="btn btn-w-m btn-outline btn-primary save">改签</button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{{ buildStaticUrl('/js/admin/ticketChange.js') }}"></script>
+{% endblock %}
+

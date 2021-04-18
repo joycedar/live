@@ -1,0 +1,175 @@
+{% extends "common/layout_main_admin.html" %}
+{% block content %}
+{% include "common/tab_user.html" %}
+<div class="row m-t  admin_trianInfoChange_wrap">
+    <div class="col-lg-12">
+        <h2 class="text-center">火车车次信息编辑</h2>
+        <div class="form-horizontal m-t m-b">
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">车次:</label>
+                <div class="col-lg-10">
+                    <input type="text" name="id" class="form-control" placeholder="请输入日期~~"
+                           value="{{ info.id }}" readonly>
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">日期:</label>
+                <div class="col-lg-10">
+                    <input type="date" name="date" class="form-control" placeholder="请输入日期~~"
+                           value="{{ info.date }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">发车时间:</label>
+                <div class="col-lg-10">
+                    <input type="leaveTime" name="time" class="form-control" placeholder="请输入日期~~"
+                           value="{{ info.leaveTime }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">类别:</label>
+                <div class="col-lg-10" readonly="">
+                    <select name="category" default="{{ info.category }}">
+                      <option value="一等座">一等座</option>
+                      <option value="二等座">二等座</option>
+                      <option value="软卧">软卧</option>
+                      <option value="硬卧">硬卧</option>
+                </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">发车时间:</label>
+                <div class="col-lg-10">
+                    <input type="time" name="leaveTime" class="form-control" placeholder="请输入发车时间~~" value="{{ info.leaveTime }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">发车站:</label>
+                <div class="col-lg-10">
+                    <select name="fromStation" default="{{ info.fromStation }}">
+                      <option value="北京">北京</option>
+                      <option value="上海">上海</option>
+                      <option value="深圳">深圳</option>
+                      <option value="新疆">新疆</option>
+                </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">终点站:</label>
+                <div class="col-lg-10">
+                    <select name="terminal" default="{{ info.terminal }}">
+                      <option value="北京">北京</option>
+                      <option value="上海">上海</option>
+                      <option value="深圳">深圳</option>
+                      <option value="新疆">新疆</option>
+                </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">硬座数量:</label>
+                <div class="col-lg-10">
+                    <input type="text" name="hardSeat" class="form-control" placeholder="请输入硬座数量~~"
+                           value="{{ info.hardSeat }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">剩余硬座数量:</label>
+                <div class="col-lg-10">
+                    <input type="text" name="restHardSeat" class="form-control" placeholder="请输入剩余硬座数量~~"
+                           value="{{ info.restHardSeat }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">软座数量:</label>
+                <div class="col-lg-10">
+                    <input type="text" name="SoftSeat" class="form-control" placeholder="请输入软座数量~~"
+                           value="{{ info.softSeat }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">剩余软座数量:</label>
+                <div class="col-lg-10">
+                    <input type="text" name="restSoftSeat" class="form-control" placeholder="请输入剩余软座数量~~"
+                           value="{{ info.restSoftSeat }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">一等座数量:</label>
+                <div class="col-lg-10">
+                    <input type="text" name="firstClassSeat" class="form-control" placeholder="请输入一等座数量~~"
+                           value="{{ info.firstClassSeat }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label">剩余一等座数量:</label>
+                <div class="col-lg-10">
+                    <input type="text" name="restFirstClassSeat" class="form-control" placeholder="请输入剩余一等座数量~~"
+                           value="{{ info.restFirstClassSeat }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+                        <div class="form-group">
+                <label class="col-lg-2 control-label">二等座数量:</label>
+                <div class="col-lg-10">
+                    <input type="text" name="secondClassSeat" class="form-control" placeholder="请输入二等座数量~~"
+                           value="{{ info.secondClassSeat }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+
+                        <div class="form-group">
+                <label class="col-lg-2 control-label">剩余二等座数量:</label>
+                <div class="col-lg-10">
+                    <input type="text" name="restSecondClassSeat" class="form-control" placeholder="请输入剩余二等座数量~~"
+                           value="{{ info.restSecondClassSeat }}">
+                </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+
+            <div class="form-group">
+                <div class="col-lg-4 col-lg-offset-2">
+                    <button class="btn btn-w-m btn-outline btn-primary save">保存</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{{ buildStaticUrl('/js/admin/trainInfoChange.js') }}"></script>
+{% endblock %}
+

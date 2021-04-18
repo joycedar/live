@@ -1,0 +1,106 @@
+{% extends "common/layout_main_admin.html" %}
+{% block content %}
+{% include "common/tab_TrainInfo.html" %}
+<div class="row">
+    <div class="col-lg-12">
+        <form class="form-inline train_Info_wrap_search">
+            <div class="row m-t p-w-m">
+
+                <div class="form-group">
+                    <select name="status" class="form-control inline">
+                        <option value="-1">请选择状态</option>
+                        {% for tmp_key in status_mapping %}
+                        <option value="{{ tmp_key }}" {% if tmp_key == search_con['status']  %} selected {% endif %}>{{  status_mapping[ tmp_key ] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" name="mix_kw" placeholder="请输入搜索内容 "class="form-control" value="{{ search_con['mix_kw'] }}">
+                        <input type="hidden" name="p" value="{{ search_con['p'] }}">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary search">
+                                <i class="fa fa-search"></i>搜索
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-lg-12">
+                    <a class="btn btn-w-m btn-outline btn-primary pull-right"
+                       href="{{ buildUrl('/admin/trainInfoSet') }}">
+                        <i class="fa fa-plus"></i>添加车次信息
+                    </a>
+                </div>
+            </div>
+        </form>
+        <table class="table table-bordered m-t">
+            <thead>
+            <tr>
+                <th >车次</th>
+                <th>类型</th>
+                <th>出发时间</th>
+                <th>始发站</th>
+                <th>终点站</th>
+                <th>一等座数量</th>
+                <th>剩余一等座数量</th>
+                <th>二等座数量</th>
+                <th>剩余二等座数量</th>
+                <th>硬卧数量</th>
+                <th>剩余硬卧数量</th>
+                <th>软卧数量</th>
+                <th>剩余软卧数量</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if list %}
+                {% for item in list %}
+            <tr>
+                <td>{{ item.id  }}</td>
+                <td>{{ item.category }}</td>
+                <td>{{ item.leaveTime  }}</td>
+                <td>{{ item.fromStation  }}</td>
+                <td>{{ item.terminal  }}</td>
+                <td>{{ item.firstClassSeat  }}</td>
+                <td>{{ item.restFirstClassSeat  }}</td>
+                <td>{{ item.secondClassSeat  }}</td>
+                <td>{{ item.restSecondClassSeat  }}</td>
+                <td>{{ item.softSeat  }}</td>
+                <td>{{ item.restSoftSeat  }}</td>
+                <td>{{ item.hardSeat  }}</td>
+                <td>{{ item.restHardSeat  }}</td>
+                <td>
+                    <a href="{{ buildUrl('/admin/trainInfoChange' ) }}?id={{ item.id  }}">
+                        <i class="fa fa-eye fa-lg"></i>
+                    </a>
+
+                    {%  if item.status == 0 %}
+                    <a class="m-l remove" href="javascript:void(0);" data="{{ item.id  }}">
+                        <i class="fa fa-trash fa-lg"></i>
+                    </a>
+                    {% else %}
+                       <a class="m-l recover" href="javascript:void(0);" data="{{ item.id  }}">
+                        <i class="fa fa-rotate-left fa-lg"></i>
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="14">暂无数据~~</td></tr>
+            {% endif %}
+            </tbody>
+        </table>
+        <!--分页代码已被封装到统一模板文件中-->
+        {% include 'common/pagenation.html' %}
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{{ buildStaticUrl('/js/admin/trainInfoOps.js') }}"></script>
+<script src="{{ buildStaticUrl('/js/admin/trainInfoList.js') }}"></script>
+{% endblock %}

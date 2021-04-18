@@ -1,0 +1,56 @@
+{% extends "common/layout_main_user.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <table class="table table-bordered m-t">
+            <thead>
+            <tr>
+                <th>列车号</th>
+                <th>出发日期</th>
+                <th>出发时间</th>
+                <th>出发站</th>
+                <th>终点站</th>
+                <th>座位类型</th>
+                <th>购买时间</th>
+                <th>价格</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if list %}
+                {% for item in list %}
+            <tr>
+                <td>{{ item.trainId  }}</td>
+                <td>{{ item.date }}</td>
+                <td>{{ item.leaveTime  }}</td>
+                <td>{{ item.fromStation  }}</td>
+                <td>{{ item.terminal  }}</td>
+                <td>{{ item.seatCategory }}</td>
+                <td>{{ item.buyTime  }}</td>
+                <td>{{ item.price  }}</td>
+                <td>
+                    {%  if item.status == 0 %}
+                    <a class="m-l remove" href="javascript:void(0);" data="{{ item.id  }}">
+                        <i class="fa fa-trash fa-lg"></i>
+                    </a>
+                    {% else %}
+                    <a class="m-l recover" href="javascript:void(0);" data="{{ item.id  }}">
+                        <i class="fa fa-rotate-left fa-lg"></i>
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="8">暂无数据~~</td></tr>
+            {% endif %}
+            </tbody>
+        </table>
+        <!--分页代码已被封装到统一模板文件中-->
+        {% include 'common/pagenation.html' %}
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{{ buildStaticUrl('/js/user/ticketOps.js') }}"></script>
+{% endblock %}
