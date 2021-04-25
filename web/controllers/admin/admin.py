@@ -167,18 +167,15 @@ def getAllUserListForRecommend():
     userList = User.query.order_by(User.fansNumber.desc()).all()
     targetUserInfoList = []
     if userList:
-        print(userList)
         for user in userList :
-            print(user)
             targetUserInfoList.append({
                 'name': user.nickname,
                 'introduction': user.introduction,
                 'avatarUrl': user.avatar
             })
-    else :
-        resp_data['data'] = targetUserInfoList
-    return jsonify(resp_data)
 
+    resp_data['data'] = targetUserInfoList
+    return jsonify(resp_data)
 #获取关注页面的人
 @route_admin.route( "/getFollowListById",methods = [ "GET","POST" ] )
 def getFollowListById():
