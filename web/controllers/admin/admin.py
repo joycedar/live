@@ -173,7 +173,6 @@ def getAllUserListForRecommend():
                 'introduction': user.introduction,
                 'avatarUrl': user.avatar
             })
-
     resp_data['data'] = targetUserInfoList
     return jsonify(resp_data)
 #获取关注页面的人
