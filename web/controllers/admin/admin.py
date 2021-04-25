@@ -163,7 +163,7 @@ def followUserById():
 #关注页页面
 @route_admin.route( "/getAllUserListForRecommend",methods = [ "GET","POST" ] )
 def getAllUserListForRecommend():
-    resp_data = {'code': 200, 'msg': '操作成功', 'data': {}}
+    resp_data = {'code': 200, 'msg': 'sucess for getAllUserListForRecommend'}
     userList = User.query.order_by(User.fansNumber.desc()).all()
     targetUserInfoList = []
     if userList:
@@ -174,7 +174,10 @@ def getAllUserListForRecommend():
                 'avatarUrl': user.avatar
             })
     resp_data['data'] = targetUserInfoList
+    print(resp_data)
     return jsonify(resp_data)
+
+
 #获取关注页面的人
 @route_admin.route( "/getFollowListById",methods = [ "GET","POST" ] )
 def getFollowListById():
