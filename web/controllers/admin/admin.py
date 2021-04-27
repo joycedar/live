@@ -131,7 +131,9 @@ def followUserById():
     req = request.values
     followId = req['followId']
     userId = req['userId']
-
+    print("🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠这是foloow的id")
+    print(followId)
+    print(userId)
     follower = User.query.filter_by(uid=followId).first()
     user = User.query.filter_by(uid=userId).first()
 
@@ -178,8 +180,6 @@ def getAllUserListForRecommend():
                 'avatarUrl': user.avatar
             })
     resp_data['data'] = targetUserInfoList
-    print("🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠")
-    print("getAllUserListForRecommend")
     return jsonify(resp_data)
 
 
