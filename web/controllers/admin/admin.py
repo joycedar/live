@@ -135,9 +135,11 @@ def followUserById():
     follower = User.query.filter_by(uid=followId).first()
     user = User.query.filter_by(uid=userId).first()
 
-
     if follower.fans != None :
         followFansList = json.loads(follower.fans)
+        if userId in followFansList:
+            resp_data['msg'] = "follower already in the follower"
+            return jsonify(resp_data)
     else :
         followFansList = []
     followFansList.append(user.uid)
@@ -146,6 +148,9 @@ def followUserById():
 
     if user.follows != None :
         userFollowList = json.loads(user.follows)
+        if followId in userFollowList:
+            resp_data['msg'] = "fans already in fanslist"
+            return jsonify(resp_data)
     else :
         userFollowList = []
     userFollowList.append(follower.uid)
@@ -154,7 +159,6 @@ def followUserById():
 
 
     db.session.add(follower)
-    db.session.commit()
     db.session.add(user)
     db.session.commit()
 
@@ -174,7 +178,8 @@ def getAllUserListForRecommend():
                 'avatarUrl': user.avatar
             })
     resp_data['data'] = targetUserInfoList
-    print(resp_data)
+    print("🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠")
+    print("getAllUserListForRecommend")
     return jsonify(resp_data)
 
 
@@ -358,7 +363,6 @@ def resignManagerListByUserId():
 
     for (index,managerId) in enumerate(managerList) :
         if managerId == userId:
-            print("🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠")
             print(index)
             print(managerId)
             managerList.remove(index)
