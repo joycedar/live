@@ -131,9 +131,9 @@ def followUserById():
     req = request.values
     followId = req['followId']
     userId = req['userId']
-    print("🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠🌠这是foloow的id")
     print(followId)
     print(userId)
+
     follower = User.query.filter_by(uid=followId).first()
     user = User.query.filter_by(uid=userId).first()
 
@@ -167,14 +167,30 @@ def followUserById():
     return jsonify(resp_data)
 
 #关注页页面
-@route_admin.route( "/getAllUserListForRecommend",methods = [ "GET","POST" ] )
+@route_admin.route( "/getAllUserListForRecommendByUid",methods = [ "GET","POST" ] )
 def getAllUserListForRecommend():
     resp_data = {'code': 200, 'msg': 'sucess for getAllUserListForRecommend'}
+    req = request.values
+    print(req)
+    uid = req['uid']
+    print(uid)
     userList = User.query.order_by(User.fansNumber.desc()).all()
     targetUserInfoList = []
+
+    #获取自己关注的列表
+    user = User.query.filter_by(uid=uid).first()
+    followerUids = json.loads(user.follows)
+    print(followerUids)
+    print(followerUids)
+
     if userList:
         for user in userList :
+            if user.uid == uid:
+                continue
+            if user.uid in followerUids:
+                continue
             targetUserInfoList.append({
+                'uid':user.uid,
                 'name': user.nickname,
                 'introduction': user.introduction,
                 'avatarUrl': user.avatar
@@ -247,6 +263,7 @@ def getAllRoomList():
         for user in roomWithUrlList:
            # if follower.liveRoom == None:
            roomList.append({
+               'uid':user.uid,
                'name':user.nickname,
                'roomImage':user.roomImage,
                'roomUrl':user.roomUrl,
@@ -286,7 +303,8 @@ def getFollwerRoomListById():
                 'avatar':follow.avatar,
                 'roomName':follow.roomName,
                 'roomImage':follow.roomImage,
-                'roomUrl':follow.roomUrl
+                'roomUrl':follow.roomUrl,
+                'uid':follow.uid
             })
 
     if targetFollowInfoList:
