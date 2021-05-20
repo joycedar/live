@@ -26,14 +26,11 @@ class KKLBarrageView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.setup()
-    }
-    
-    private func setup(){
         //添加数据
-        self.dataSouse()
+        self.barrageStrArray.addObjects(from: souseArray)
         timer = Timer.scheduledTimer(timeInterval: 1, target: YYWeakProxy(target: self), selector: #selector(barrageLableAnimate), userInfo: nil, repeats: true)
     }
+
     
     //添加到view上边一个弹幕
     @objc
@@ -45,14 +42,13 @@ class KKLBarrageView: UIView {
     }
 
     private func showBarrageLableAnimate(){
-        weak var wSelf = self
+        weak var weakSelf = self
         //如果数据为空让timer循环检测 否则关闭检测
         isUseTimeAddAnimate = false
         if (barrageStrArray.count == 0) {
             isUseTimeAddAnimate = true
-            
             ///模拟添加数据不让弹幕终止  此处应该是网络请求回来添加的数据
-            self.dataSouse()
+            self.barrageStrArray.addObjects(from: souseArray)
             return
         }
         
@@ -63,7 +59,7 @@ class KKLBarrageView: UIView {
                 case .FullAccess://完全进入
                     //主线程更新UI 若不在主线UI控件不在屏幕上渲染
                     DispatchQueue.main.async {
-                        wSelf?.showBarrageLableAnimate()
+                        weakSelf?.showBarrageLableAnimate()
                     }
                 case .End://结束
                     DispatchQueue.main.async {
@@ -76,10 +72,7 @@ class KKLBarrageView: UIView {
         }
     }
     
-    
-    private func dataSouse(){
-        self.barrageStrArray.addObjects(from: souseArray)
-    }
+
     
     //创建lable
     private func createLable(contentStr:String,type:@escaping KKLBarrageLableTypeBlock){
@@ -106,7 +99,7 @@ class KKLBarrageView: UIView {
         //执行回调
         let delayFullAccessTime:DispatchTimeInterval = .seconds(Int(fullAccessTime))
         let delayEndTime:DispatchTimeInterval = .seconds(Int(moveT))
-        let delayQueue = DispatchQueue.init(label: "com.syc.nd", qos: DispatchQoS.userInteractive)
+        let delayQueue = DispatchQueue(label: "com.syc.nd", qos: DispatchQoS.userInteractive)
         //完全进入后
         delayQueue.asyncAfter(deadline:.now() + delayFullAccessTime) {
             type(BarrageType.FullAccess,barrageLable)
@@ -123,6 +116,7 @@ class KKLBarrageView: UIView {
     }
 
     private let souseArray:[String] = ["富强民主","文明社会","敬业爱国","诚信友善"]
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

@@ -47,23 +47,3 @@ let  API_getAllRoomList = "getAllRoomList"
 
 //4.2查询用户信息
 
-let RTMPLIST = [
-    "rtmp://58.200.131.2:1935/livetv/cctv1",
-    "rtmp://58.200.131.2:1935/livetv/cctv2",
-    "rtmp://58.200.131.2:1935/livetv/cctv3",
-    "rtmp://58.200.131.2:1935/livetv/cctv4",
-    "rtmp://58.200.131.2:1935/livetv/cctv5",
-    "rtmp://58.200.131.2:1935/livetv/cctv6",
-    "rtmp://58.200.131.2:1935/livetv/cctv7"
-]
-
-
-let CCTVNameList = [
-    "CCTV1",
-    "CCTV2",
-    "CCTV3",
-    "CCTV4",
-    "CCTV5",
-    "CCTV6",
-    "CCTV7"
-]

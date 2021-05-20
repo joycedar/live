@@ -207,40 +207,33 @@ extension HomeViewController:UITableViewDelegate, UITableViewDataSource {
     }
     
     
-    
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        switch indexPath.section {
-//        case 0:
-//            if let cell = tableview.cellForRow(at: indexPath) {
-//                 if cell.isKind(of: RoomCell.self) {
-//                    let streamUrl = homeViewModel.liveRoomList[indexPath.row].roomUrl
-//                    let liveModel = LiveModel()
-//
-//                    let playViewController = KKLPlayerViewController()
-//                    playViewController.liveModel = liveModel
-//                    self.navigationController?.pushViewController(playViewController, animated: true)
-//                 }
-//             }
-//        case 1:
-//            if let cell = tableview.cellForRow(at: indexPath) {
-//                if cell.isKind(of: CCTVRoomCell.self) {
-//                    let streamUrl = RTMPLIST[indexPath.row]
-//                    let liveModel = LiveModel()
-//                    liveModel.stream_addr = streamUrl
-//                    liveModel.name = CCTVNameList[indexPath.row]
-//                    let playViewController = KKLPlayerViewController()
-//                    playViewController.liveModel = liveModel
-//                    self.navigationController?.pushViewController(playViewController, animated: true)
-//                }
-//            }
-//
-//
-//        default:
-//            return
-//        }
-//
-//    }
-//}
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            if let cell = tableview.cellForRow(at: indexPath) {
+                 if cell.isKind(of: RoomCell.self) {
+                    let userModel = UserProfileModel()
+                    let playViewController = KKLPlayerViewController()
+                    playViewController.userLive = self.homeViewModel.liveRoomList[indexPath.row]
+                    self.navigationController?.pushViewController(playViewController, animated: true)
+                 }
+             }
+        case 1:
+            if let cell = tableview.cellForRow(at: indexPath) {
+                if cell.isKind(of: CCTVRoomCell.self) {
+                    let playViewController = KKLPlayerViewController()
+                    playViewController.cctvLive = self.homeViewModel.SWCCTVModelList[indexPath.row]
+                    self.navigationController?.pushViewController(playViewController, animated: true)
+                }
+            }
+
+
+        default:
+            return
+        }
+
+    }
+
 }
 
 extension HomeViewController:UITextViewDelegate {

@@ -12,8 +12,6 @@ import EaseIMKit
 import HyphenateChat
 
 
-
-
 class SWConversationListViewController:UIViewController  {
     let conversationList = [Any]()
     let viewModel = EaseConversationViewModel()
@@ -33,7 +31,6 @@ class SWConversationListViewController:UIViewController  {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
     }
     
     override func viewDidLoad() {
@@ -49,6 +46,7 @@ class SWConversationListViewController:UIViewController  {
             make.height.equalToSuperview()
             make.width.equalToSuperview()
         }
+        conversationViewController.delegate = self
     }
     func refreshTableVew() {
         DispatchQueue.main.async {
@@ -69,9 +67,11 @@ class SWConversationListViewController:UIViewController  {
             }
         })
     }
+    
+    
 }
 
-//加油～
+
 extension SWConversationListViewController:EaseConversationsViewControllerDelegate{
     func easeTableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? EaseConversationCell {

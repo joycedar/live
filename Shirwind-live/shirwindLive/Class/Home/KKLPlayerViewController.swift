@@ -10,127 +10,94 @@ import UIKit
 import IJKMediaFramework
 
 class KKLPlayerViewController: UIViewController {
-    ///模型
-    var live:KKLLive?
-    ///播放控制器
+    var cctvLive:SWCCTVModel?
+    var userLive:SWRoomModel?
+    
     var player:IJKMediaPlayback?
-    
-    //播放界面视图控制器
-    var liveChatVC:KKLLiveViewController = {
-        let vc = KKLLiveViewController()
-        return vc
-    }()
-    
-    //关闭按钮
+    var watchingRoomViewController:KKLLiveViewController = KKLLiveViewController()
+    var blurImageView:UIImageView = UIImageView()
     var closeBtn:UIButton = {
-        let btn = UIButton.init(type: .custom)
-        btn.setImage(UIImage.init(named: "mg_room_btn_guan_h"), for: .normal)
-        btn.sizeToFit()
-        btn.frame = CGRect.init(x: UIScreen.main.bounds.width - btn.frame.width - CGFloat(10), y: UIScreen.main.bounds.height - btn.frame.height - 10, width: btn.frame.width, height: btn.frame.height)
+        let btn = UIButton(type: .custom)
+        btn.setImage(UIImage(named: "room_close_button"), for: .normal)
+        btn.frame = CGRect(x: UIScreen.main.bounds.width - 87 - 10,
+                           y: UIScreen.main.bounds.height - 87 - 10,
+                           width: 87,
+                           height: 87)
         return btn
     }()
     
-    ///毛玻璃效果图片
-    var blurImageView:UIImageView = UIImageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.setup()
+        self.view.backgroundColor = UIColor.white
+        
+        self.blurImageView.frame = self.view.bounds
+        self.blurImageView.isUserInteractionEnabled = true
+        self.view.addSubview(self.blurImageView)
+        let blur = UIBlurEffect(style: .light)
+        let blurView = UIVisualEffectView(effect: blur)
+        blurView.frame = self.blurImageView.bounds
+        self.blurImageView.addSubview(blurView)
+        
+        //play的位置
+        self.player = IJKFFMoviePlayerController(contentURLString: cctvLive?.url == nil ? userLive?.roomUrl : cctvLive?.url,
+                                                 with: IJKFFOptions.byDefault())
+        self.player?.prepareToPlay()
+        self.player?.shouldAutoplay = true
+        if let view = self.player?.view{
+            self.view.addSubview(view)
+        }
+        var safeTop = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 20
+        self.player?.view.snp.makeConstraints({ (make) in
+            make.centerY.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.height.equalToSuperview().dividedBy(3)
+            make.width.equalToSuperview()
+        })
+        
+        self.addChild(watchingRoomViewController)
+        self.view.addSubview(watchingRoomViewController.view)
+        self.watchingRoomViewController.view.snp.makeConstraints { (make) in
+            make.edges.equalTo(self.view).inset(UIEdgeInsets(top: safeTop, left: 0, bottom: 0, right: 0))
+        }
+        self.watchingRoomViewController.cctvLive = cctvLive
+        self.watchingRoomViewController.userLive = userLive
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         self.navigationController?.isNavigationBarHidden = true
+        self.tabBarController?.tabBar.isHidden = true
         
-        ///注册直播需要的通知
         self.installMovieNotificationObservers()
-        //准备播放
-        self.player?.prepareToPlay()
-        
-        let win = UIApplication.shared.delegate?.window
-        win??.addSubview(self.closeBtn)
-        closeBtn.addTarget(self, action: #selector(KKLPlayerViewController.closeBtnClick), for: .touchUpInside)
-    }
 
+        let window = UIApplication.shared.delegate?.window //这时候的window是
+        window??.addSubview(self.closeBtn)
+        closeBtn.addTarget(self, action: #selector(closeBtnClick), for: .touchUpInside)
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.isNavigationBarHidden = false
-        //关直播
         self.player?.shutdown()
         self.removeMovieNotificationObservers()
         self.closeBtn.removeFromSuperview()
     }
     
     
-    //MARK:初始化
-    private func setup(){
-        // 初始化播放控制器
-        self.initPlayer()
-        // 初始化毛玻璃控件
-        self.initUI()
-        // 添加自控制器
-        self.addChildVC()
-    }
-    
-    private func initPlayer(){
-        if let live = live {
-            let options = IJKFFOptions.byDefault()
-            let playerVC = IJKFFMoviePlayerController.init(contentURLString: live.stream_addr, with: options)
-            self.player = playerVC
-            self.player?.view.frame = self.view.bounds
-            self.player?.shouldAutoplay = true
-
-            if let view = self.player?.view{
-                self.view.addSubview(view)
-            }
-        }
-    }
-    
-    private func initUI(){
-        self.view.backgroundColor = UIColor.black
-        self.blurImageView.frame = self.view.bounds
-        self.blurImageView.isUserInteractionEnabled = true
-
-        self.view.addSubview(self.blurImageView)
-        
-        //创建毛玻璃效果
-        let blur = UIBlurEffect.init(style: .light)
-        //创建毛玻璃视图
-        let blurView = UIVisualEffectView.init(effect: blur)
-        blurView.frame = self.blurImageView.bounds
-        self.blurImageView.addSubview(blurView)
-    }
-    
-    private func addChildVC(){
-        self.addChild(liveChatVC)
-        self.view.addSubview(liveChatVC.view)
-        self.liveChatVC.view.snp.makeConstraints { (make) in
-            make.edges.equalTo(self.view)
-        }
-        
-        self.liveChatVC.live = live
-    }
-    
     //MARK:- Pragma mark Install Movie Notifications
     private func installMovieNotificationObservers(){
-        
-        //监听网络环境，监听缓冲方法
-        NotificationCenter.default.addObserver(self, selector: #selector(KKLPlayerViewController.loadStateDidChange(notification:)), name: NSNotification.Name.IJKMPMoviePlayerLoadStateDidChange, object: player)
-        
-        //监听直播完成回调
-         NotificationCenter.default.addObserver(self, selector: #selector(KKLPlayerViewController.moviePlayBackDidFinish(notification:)), name: NSNotification.Name.IJKMPMoviePlayerPlaybackDidFinish, object: player)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(KKLPlayerViewController.mediaIsPreparedToPlayDidChange(notification:)), name: NSNotification.Name.IJKMPMediaPlaybackIsPreparedToPlayDidChange, object: player)
-        
-        //监听用户主动操作
-        NotificationCenter.default.addObserver(self, selector: #selector(KKLPlayerViewController.moviePlayBackStateDidChange(notification:)), name: NSNotification.Name.IJKMPMoviePlayerPlaybackStateDidChange, object: player)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(loadStateDidChange(notification:)), name: NSNotification.Name.IJKMPMoviePlayerLoadStateDidChange, object: player)
+         NotificationCenter.default.addObserver(self, selector: #selector(moviePlayBackDidFinish(notification:)), name: NSNotification.Name.IJKMPMoviePlayerPlaybackDidFinish, object: player)
+        NotificationCenter.default.addObserver(self, selector: #selector(mediaIsPreparedToPlayDidChange(notification:)), name: NSNotification.Name.IJKMPMediaPlaybackIsPreparedToPlayDidChange, object: player)
+        NotificationCenter.default.addObserver(self, selector: #selector(moviePlayBackStateDidChange(notification:)), name: NSNotification.Name.IJKMPMoviePlayerPlaybackStateDidChange, object: player)
     }
-    
+
     
     ///关闭按钮
-    @objc func closeBtnClick(){
+    @objc
+    func closeBtnClick(){
         _ = self.navigationController?.popViewController(animated: true)
     }
     
@@ -143,25 +110,26 @@ class KKLPlayerViewController: UIViewController {
     }
     
     //MARK: NSNotification监听方法
-    @objc  func loadStateDidChange(notification:Notification){
-        
+    @objc
+    func loadStateDidChange(notification:Notification){
         self.blurImageView.isHidden = true
         self.blurImageView.removeFromSuperview()
+        print("可能是失败的")
     }
     
-    @objc func moviePlayBackDidFinish(notification:Notification){
-        
-        
+    @objc
+    func moviePlayBackDidFinish(notification:Notification){
+        print("来啦～")
     }
     
-    @objc func mediaIsPreparedToPlayDidChange(notification:Notification){
-        
-        
+    @objc
+    func mediaIsPreparedToPlayDidChange(notification:Notification){
+        print("正在准备中，等等～")
     }
     
-    @objc func moviePlayBackStateDidChange(notification:Notification){
-        
-        
+    @objc
+    func moviePlayBackStateDidChange(notification:Notification){
+        print("网络环境发生变化")
     }
     
 }

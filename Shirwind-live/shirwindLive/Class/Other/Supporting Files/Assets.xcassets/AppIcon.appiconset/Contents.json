@@ -16,6 +16,7 @@
       "size" : "29x29"
     },
     {
+      "filename" : "snow.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "29x29"
@@ -36,6 +37,7 @@
       "size" : "60x60"
     },
     {
+      "filename" : "snow_app.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "60x60"

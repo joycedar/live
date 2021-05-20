@@ -76,8 +76,8 @@ typedef enum {
     
     [_header.prompt setText:@"松手更新..."];
     NSMutableArray  *arrayM=[NSMutableArray array];
-    for (int i=1; i<3; i++) {
-        [arrayM addObject:[UIImage imageNamed:[NSString stringWithFormat:@"panda%d",i]]];
+    for (int i=1; i<7; i++) {
+        [arrayM addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading-%d",i]]];
     }
     //设置动画数组
     [_header.icon setAnimationImages:arrayM];

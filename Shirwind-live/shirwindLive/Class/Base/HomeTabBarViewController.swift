@@ -11,6 +11,7 @@ class HomeTabBarViewController: UITabBarController {
         self.view.backgroundColor = .white
         self.tabBar.shadowImage = UIImage()
         self.setupViewControllers()
+        self.hidesBottomBarWhenPushed = true;
         
     }
     
