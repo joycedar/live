@@ -19,6 +19,42 @@ import json
 
 route_admin = Blueprint( 'admin_page',__name__ )
 
+@route_admin.route( "/login",methods = [ "GET" ] )
+def login():
+    resp = {'code': 200, 'msg': '登录成功', 'data': {}}
+    req = request.values
+    login_name = req['login_name'] if 'login_name' in req else ''
+    login_pwd = req['login_pwd'] if 'login_pwd' in req else ''
+
+    if  login_name is None or len( login_name ) < 1:
+        resp['code'] = -1
+        resp['msg'] = "请校验输入格式"
+        return jsonify( resp )
+
+    if  login_pwd is None or len( login_pwd ) < 1:
+        resp['code'] = -1
+        resp['msg'] = "请校验输入格式"
+        return jsonify(resp)
+
+    info = User.query.filter_by( nickname = login_name ).first()
+
+    if not info:
+        resp['code'] = -1
+        resp['msg'] = "不存在该账户信息"
+        return jsonify(resp)
+
+    if info.password != login_pwd:
+        resp['code'] = -1
+        resp['msg'] = "请输入正确的密码"
+        return jsonify(resp)
+
+    if info.status != 1:
+        resp['code'] = -1
+        resp['msg'] = "账号已被禁用，请联系管理员处理"
+        return jsonify(resp)
+
+    return jsonify(resp)
+
 @route_admin.route( "/analysis",methods = [ "GET","POST" ] )
 def analysis():
     # -*- coding: utf-8 -*-
