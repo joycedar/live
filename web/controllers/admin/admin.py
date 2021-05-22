@@ -63,42 +63,6 @@ def accountList():
 
     return ops_render("admin/accountList.html", resp_data)
 
-@route_admin.route( "/accountList",methods = [ "GET","POST" ] )
-def accountList():
-    resp_data = {}
-    req = request.values
-    page = int(req['p']) if ('p' in req and req['p']) else 1
-    query = User.query
-
-    if 'mix_kw' in req:
-        rule = or_(User.nickname.ilike("%{0}%".format(req['mix_kw'])),
-                   )
-        query = query.filter(rule)
-
-    if 'status' in req and int(req['status']) > -1:
-        query = query.filter(User.status == int(req['status']))
-
-    page_params = {
-        'total': query.count(),#
-        'page_size': app.config['PAGE_SIZE'],
-        'page': page,
-        'display': app.config['PAGE_DISPLAY'],
-        'url': request.full_path.replace("&p={}".format(page), "")
-    }
-
-    pages = iPagination(page_params)
-    offset = (page - 1) * app.config['PAGE_SIZE']
-    limit = app.config['PAGE_SIZE'] * page
-
-    list = query.order_by(User.uid.desc()).all()[offset:limit]
-
-    resp_data['list'] = list
-    resp_data['pages'] = pages
-    resp_data['search_con'] = req
-    resp_data['status_mapping'] = app.config['STATUS_MAPPING']
-
-    return ops_render("admin/accountList.html", resp_data)
-
 @route_admin.route( "/accountOps",methods = [ "GET","POST" ] )
 def deleteAccount():
     resp = {'code': 200, 'msg': '操作成功', 'data': {}}
