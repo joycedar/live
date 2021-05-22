@@ -8,9 +8,9 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ENCODING = "utf8mb4"
 
 
-AUTH_COOKIE_NAME = "joyCedar"
+AUTH_COOKIE_NAME = "ShirWind"
 
-SEO_TITLE = "joyCedar's Live BackGround"
+SEO_TITLE = "ShirWind's Management System"
 
 IGNORE_URLS = [
     "^/login",

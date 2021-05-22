@@ -4,6 +4,8 @@ from common.libs.Helper import ( ops_render )
 from common.libs.UrlManager import ( UrlManager )
 from application import app,db
 from common.models.User import User
+from common.models.present import Present
+from common.models.room import Room
 from common.models.groupVoteRecord import GroupVoteRecord
 from common.models.userVoteRecord import UserVoteRecord
 import datetime
@@ -25,7 +27,41 @@ def analysis():
     resp_data = {}
     return ops_render("admin/analysis.html", resp_data)
 
+@route_admin.route( "/accountList",methods = [ "GET","POST" ] )
+def accountList():
+    resp_data = {}
+    req = request.values
+    page = int(req['p']) if ('p' in req and req['p']) else 1
+    query = User.query
 
+    if 'mix_kw' in req:
+        rule = or_(User.nickname.ilike("%{0}%".format(req['mix_kw'])),
+                   )
+        query = query.filter(rule)
+
+    if 'status' in req and int(req['status']) > -1:
+        query = query.filter(User.status == int(req['status']))
+
+    page_params = {
+        'total': query.count(),#
+        'page_size': app.config['PAGE_SIZE'],
+        'page': page,
+        'display': app.config['PAGE_DISPLAY'],
+        'url': request.full_path.replace("&p={}".format(page), "")
+    }
+
+    pages = iPagination(page_params)
+    offset = (page - 1) * app.config['PAGE_SIZE']
+    limit = app.config['PAGE_SIZE'] * page
+
+    list = query.order_by(User.uid.desc()).all()[offset:limit]
+
+    resp_data['list'] = list
+    resp_data['pages'] = pages
+    resp_data['search_con'] = req
+    resp_data['status_mapping'] = app.config['STATUS_MAPPING']
+
+    return ops_render("admin/accountList.html", resp_data)
 
 @route_admin.route( "/accountList",methods = [ "GET","POST" ] )
 def accountList():
@@ -166,6 +202,208 @@ def followUserById():
 
     return jsonify(resp_data)
 
+
+@route_admin.route( "/presentList",methods =  ["GET","POST"] )
+def presentList():
+    resp_data = {}
+    req = request.values
+    page = int(req['p']) if ('p' in req and req['p']) else 1
+    query = Present.query
+
+    if 'mix_kw' in req:
+        rule = or_(Present.presentId.ilike("%{0}%".format(req['mix_kw'])),
+                   )
+        query = query.filter(rule)
+
+    if 'status' in req and int(req['status']) > -1:
+        query = query.filter(Present.status == int(req['status']))
+
+    page_params = {
+        'total': query.count(),#
+        'page_size': app.config['PAGE_SIZE'],
+        'page': page,
+        'display': app.config['PAGE_DISPLAY'],
+        'url': request.full_path.replace("&p={}".format(page), "")
+    }
+
+    pages = iPagination(page_params)
+    offset = (page - 1) * app.config['PAGE_SIZE']
+    limit = app.config['PAGE_SIZE'] * page
+
+    list = query.order_by(Present.presentId).all()[offset:limit]
+
+    resp_data['list'] = list
+    resp_data['pages'] = pages
+    resp_data['search_con'] = req
+    resp_data['status_mapping'] = app.config['STATUS_MAPPING']
+
+    return ops_render("admin/presentList.html", resp_data)
+    return
+
+
+@route_admin.route( "/presentOps",methods =  ["POST"] )
+def presentOps():
+    resp = {'code': 200, 'msg': '操作成功', 'data': {}}
+    req = request.values
+
+    presentId = req['presentId'] if 'presentId' in req else 0
+    act = req['act'] if 'act' in req else ''
+
+    if not presentId:
+        resp['code'] = -1
+        resp['msg'] = "请选择要操作的礼物"
+        return jsonify(resp)
+
+    if act not in ['remove', 'recover']:
+        resp['code'] = -1
+        resp['msg'] = "操作有误，请重试"
+        return jsonify(resp)
+
+    present_info = Present.query.filter_by(presentId=presentId).first()
+
+    if not present_info:
+        resp['code'] = -1
+        resp['msg'] = "指定账号不存在"
+        return jsonify(resp)
+
+    if act == "remove":
+        present_info.status = 0
+    elif act == "recover":
+        present_info.status = 1
+
+    db.session.add(present_info)
+    db.session.commit()
+    return jsonify(resp)
+    return
+
+
+@route_admin.route( "/presentAdd",methods =  ["GET","POST"] )
+def presentAdd():
+    if request.method == "GET":
+        resp_data = {}
+        req = request.args
+        presentId = req["presentId"]
+        info = None
+        if presentId :
+            presentInfo = Present.query.filter_by( presentId = presentId ).first()
+        else:
+            presentInfo = Present()
+        resp_data['info'] = presentInfo
+        return ops_render( "admin/presentAdd.html",resp_data )
+
+    resp = { 'code':200,'msg':'操作成功~~','data':{} }
+    req = request.values
+
+    presentId = req['presentId'] if 'presentId' in req else 0
+    presentName = req['presentName'] if 'presentName' in req else ''
+    money = req['money'] if 'money' in req else ''
+
+
+    if presentName is None or len( presentName ) < 1:
+        resp['code'] = -1
+        resp['msg'] = "请输入符合规范的礼物~~"
+        return jsonify( resp )
+
+    if money is None or len( money ) < 1:
+        resp['code'] = -1
+        resp['msg'] = "请输入合理的金钱数目"
+        return jsonify( resp )
+
+
+
+    present_info = Present.query.filter_by( presentId = presentId ).first()
+    if present_info:
+        new_model = present_info
+    else:
+        new_model = Present()
+
+    new_model.prsentName = presentName
+    new_model.money = money
+    print("已经创建了一个礼物记录了～🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸")
+    print(new_model.prsentName)
+    print(new_model.money)
+
+    db.session.add( new_model )
+    db.session.commit()
+    return jsonify(resp)
+
+
+
+@route_admin.route( "/roomList",methods =  ["GET","POST"] )
+def roomList():
+    resp_data = {}
+    req = request.values
+    page = int(req['p']) if ('p' in req and req['p']) else 1
+    query = Room.query
+
+    if 'mix_kw' in req:
+        rule = or_(Room.roomId.ilike("%{0}%".format(req['mix_kw'])),
+                   )
+        query = query.filter(rule)
+
+    if 'status' in req and int(req['status']) > -1:
+        query = query.filter(Room.status == int(req['status']))
+
+    page_params = {
+        'total': query.count(),#
+        'page_size': app.config['PAGE_SIZE'],
+        'page': page,
+        'display': app.config['PAGE_DISPLAY'],
+        'url': request.full_path.replace("&p={}".format(page), "")
+    }
+
+    pages = iPagination(page_params)
+    offset = (page - 1) * app.config['PAGE_SIZE']
+    limit = app.config['PAGE_SIZE'] * page
+
+    list = query.order_by(Room.uid).all()[offset:limit]
+
+    resp_data['list'] = list
+    resp_data['pages'] = pages
+    resp_data['search_con'] = req
+    resp_data['status_mapping'] = app.config['STATUS_MAPPING']
+
+    return ops_render("admin/roomList.html", resp_data)
+    return
+
+
+@route_admin.route( "/roomOps",methods =  ["GET","POST"] )
+def roomOps():
+
+    resp = {'code': 200, 'msg': '操作成功', 'data': {}}
+    req = request.values
+
+    roomId = req['roomId'] if 'roomId' in req else 0
+    act = req['act'] if 'act' in req else ''
+    print("roomId")
+    if not roomId:
+        resp['code'] = -1
+        resp['msg'] = "请选择要操作的房间"
+        return jsonify(resp)
+
+    if act not in ['remove', 'recover']:
+        resp['code'] = -1
+        resp['msg'] = "操作有误，请重试"
+        return jsonify(resp)
+
+    room_info = Room.query.filter_by(roomId=roomId).first()
+
+    if not room_info:
+        resp['code'] = -1
+        resp['msg'] = "指定账号不存在"
+        return jsonify(resp)
+
+    if act == "remove":
+        room_info.status = 0
+    elif act == "recover":
+        room_info.status = 1
+
+    print("删除啦～～～🔥删除啦～～～🔥删除啦～～～🔥删除啦～～～🔥删除啦～～～🔥删除啦～～～🔥")
+    db.session.add(room_info)
+    db.session.commit()
+    return jsonify(resp)
+    return
+
 #关注页页面
 @route_admin.route( "/getAllUserListForRecommendByUid",methods = [ "GET","POST" ] )
 def getAllUserListForRecommend():
@@ -180,8 +418,7 @@ def getAllUserListForRecommend():
     #获取自己关注的列表
     user = User.query.filter_by(uid=uid).first()
     followerUids = json.loads(user.follows)
-    print(followerUids)
-    print(followerUids)
+
 
     if userList:
         for user in userList :
@@ -267,7 +504,8 @@ def getAllRoomList():
                'name':user.nickname,
                'roomImage':user.roomImage,
                'roomUrl':user.roomUrl,
-               'roomName':user.roomName
+               'roomName':user.roomName,
+               'roomDescription':user.roomDescription
            })
     else:
         resp_data['code'] = 201
@@ -316,8 +554,6 @@ def getFollwerRoomListById():
         return resp_data
 
     return jsonify(resp_data)
-
-
 
 
 @route_admin.route("/createLiveRoombyUid", methods=["GET", "POST"])
@@ -536,3 +772,31 @@ def getAllGroupListByGroupId():
             'msg': 'sucess to getDetail groupVote',
             'data': targetGroupVoteList}
     return jsonify(resp)
+
+
+
+@route_admin.route( "/postBarrageById",methods = [ "GET","POST" ] )
+def postBarrange():
+    resp = {}
+    req = request.values
+    barrage = req['barrage'] if 'barrage' in req else ''
+    #实现敏感词过滤,实现
+    resp['code'] = 200
+
+
+
+
+    return jsonify(resp)
+
+
+@route_admin.route("/login",methods = [ "GET","POST" ])
+def login():
+    resp = {}
+    req = request.values
+
+    userName = req['userName'] if 'userName' in req else ''
+    password = req['password'] if 'password' in req else ''
+
+
+    result = User.query.filter_by(userName=userName).first()
+    return true

@@ -32,15 +32,6 @@ def register():
         resp['msg'] = "请输入符合规范的密码"
         return jsonify(resp)
 
-    if identification  is None or len(identification) < 1:
-        resp['code'] = -1
-        resp['msg'] = "请输入符合规范的身份证号码"
-        return jsonify(resp)
-
-    if gender  is None or len(password) < 1:
-        resp['code'] = -1
-        resp['msg'] = "请输入符合规范的性别"
-        return jsonify(resp)
 
     user_info  = User()
 

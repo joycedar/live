@@ -15,10 +15,6 @@
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
                <li class="nav-header">
-                    <div class="profile-element text-center">
-                        <img alt="image" class="img-circle" src="{{ buildStaticUrl('/images/common/logo.png') }}"/>
-                        <p class="text-muted">shirwind的直播后台</p>
-                    </div>
                     <div class="logo-element">
                         <img alt="image" class="img-circle" src="{{ buildStaticUrl('/images/common/train.jpg') }}"/>
                     </div>
@@ -28,13 +24,17 @@
                             class="nav-label">用户管理</span></a>
                 </li>
 
-                <li class="default">
-                    <a href="{{ buildUrl('/admin/analysis') }}"><i class="fa fa-dashboard fa-lg"></i>
-                        <span class="nav-label">礼物配置</span></a>
+                <li class="present">
+                    <a href="{{ buildUrl('/admin/presentList') }}"><i class="fa fa-heart fa-lg"></i>
+                        <span class="nav-label">礼物管理</span></a>
+                </li>
+
+                <li class="room">
+                    <a href="{{ buildUrl('/admin/roomList') }}"><i class="fa fa-home fa-lg"></i>
+                        <span class="nav-label">直播间管理</span></a>
                 </li>
 
             </ul>
-
         </div>
     </nav>
 

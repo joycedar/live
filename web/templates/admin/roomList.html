@@ -15,7 +15,7 @@
 
                 <div class="form-group">
                     <div class="input-group">
-                        <input type="text" name="mix_kw" placeholder="请输入搜索字段" class="form-control" value="{{ search_con['mix_kw'] }}">
+                        <input type="text" name="mix_kw" placeholder="请输入查找字段" class="form-control" value="{{ search_con['mix_kw'] }}">
                         <input type="hidden" name="p" value="{{ search_con['p'] }}">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-primary search">
@@ -27,34 +27,38 @@
 
             </div>
             <hr>
-
+            <div class="row">
+                <div class="col-lg-12">
+                </div>
+            </div>
 
         </form>
         <table class="table table-bordered m-t">
             <thead>
             <tr>
                 <th>序号</th>
-                <th>姓名</th>
-                <th>关注数量</th>
-                <th>粉丝数量</th>
-                <th>操作</th>
+                <th>房主Uid</th>
+                <th>房间名字</th>
+                <th>房间URL</th>
+                <th>房间观看数量</th>
             </tr>
             </thead>
             <tbody>
             {% if list %}
                 {% for item in list %}
             <tr>
+                <td>{{ item.roomId  }}</td>
                 <td>{{ item.uid  }}</td>
-                <td>{{ item.nickname  }}</td>
-                <td>{{ item.fansNumber  }}</td>
-                <td>{{ item.followNumber }}</td>
+                <td>{{ item.roomName  }}</td>
+                <td>{{ item.roomUrl  }}</td>
+                <td>{{ item.roomWatchingNumber  }}</td>
                 <td>
                     {%  if item.status == 1 %}
-                    <a class="m-l remove" href="javascript:void(0);" data="{{ item.uid  }}">
-                        <i class="fa fa-trash fa-lg"></i>
+                    <a class="m-l remove" href="javascript:void(0);" data="{{ item.roomId  }}">
+                        <i class="fa fa-gear fa-lg"></i>
                     </a>
                     {% else %}
-                       <a class="m-l recover" href="javascript:void(0);" data="{{ item.uid  }}">
+                       <a class="m-l recover" href="javascript:void(0);" data="{{ item.roomId  }}">
                         <i class="fa fa-rotate-left fa-lg"></i>
                     </a>
                     {% endif %}
@@ -72,5 +76,5 @@
 </div>
 {% endblock %}
 {% block js %}
-<script src="{{ buildStaticUrl('/js/admin/account.js') }}"></script>
+<script src="{{ buildStaticUrl('/js/admin/room.js') }}"></script>
 {% endblock %}
