@@ -20,7 +20,7 @@ import json
 route_admin = Blueprint( 'admin_page',__name__ )
 
 @route_admin.route( "/login",methods = [ "GET" ] )
-def login():
+def llogin():
     resp = {'code': 200, 'msg': '登录成功', 'data': {}}
     req = request.values
     login_name = req['login_name'] if 'login_name' in req else ''
