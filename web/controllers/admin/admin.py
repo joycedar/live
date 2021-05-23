@@ -21,6 +21,7 @@ route_admin = Blueprint( 'admin_page',__name__ )
 
 @route_admin.route( "/login",methods = [ "GET" ] )
 def llogin():
+
     resp = {'code': 200, 'msg': '登录成功', 'data': {}}
     req = request.values
     login_name = req['login_name'] if 'login_name' in req else ''
@@ -39,16 +40,16 @@ def llogin():
     info = User.query.filter_by( nickname = login_name ).first()
 
     if not info:
-        resp['code'] = -1
+        resp['code'] = 1
         resp['msg'] = "不存在该账户信息"
         return jsonify(resp)
 
     if info.password != login_pwd:
-        resp['code'] = -1
+        resp['code'] = 2
         resp['msg'] = "请输入正确的密码"
         return jsonify(resp)
 
-    if info.status != 1:
+    if info.status != 3
         resp['code'] = -1
         resp['msg'] = "账号已被禁用，请联系管理员处理"
         return jsonify(resp)
