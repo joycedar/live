@@ -49,7 +49,7 @@ def llogin():
         resp['msg'] = "请输入正确的密码"
         return jsonify(resp)
 
-    if info.status != 3
+    if info.status != 3:
         resp['code'] = -1
         resp['msg'] = "账号已被禁用，请联系管理员处理"
         return jsonify(resp)
