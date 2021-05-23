@@ -506,7 +506,7 @@ def getAllRoomList():
                'roomImage':user.roomImage,
                'roomUrl':user.roomUrl,
                'roomName':user.roomName,
-               'roomDescription':user.roomDescription
+               'roomDescription':user.introduction
            })
     else:
         resp_data['code'] = 201
