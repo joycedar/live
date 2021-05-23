@@ -489,7 +489,39 @@ def getAllRoomList():
     resp_data = {'code': 200, 'msg': '操作成功', 'data': {}}
     req = request.values
 
-    allRoomList = User.query.order_by(User.roomWatchingNumber.desc()).all()
+    allRoomListWithCCTV = Room.query.filter(Room.status != 3)
+    allRoomList = allRoomListWithCCTV.order_by(Room.roomWatchingNumber.desc()).all()
+
+
+    roomWithUrlList = []
+    for room in allRoomList:
+        if room.roomUrl != None:
+            roomWithUrlList.append(room)
+    roomList = []
+
+    if roomWithUrlList:
+        for room in roomWithUrlList:
+           roomList.append({
+               'uid':room.uid,
+               'name':room.name,
+               'roomUrl':room.roomUrl,
+               'roomName':room.roomName,
+               'roomDescription':room.roomDescription
+           })
+    else:
+        resp_data['code'] = 201
+        resp_data['msg']= "not live Room at all "
+        return resp_data
+
+    resp_data['data'] = roomList
+    return jsonify(resp_data)
+
+@route_admin.route("/closeRoom", methods=["GET", "POST"])
+def closeRoom():
+    resp_data = {'code': 200, 'msg': '操作成功', 'data': {}}
+    req = request.values
+
+    allRoomList = Room.query.order_by(Room.roomWatchingNumber.desc()).all()
     roomWithUrlList = []
     for room in allRoomList:
         if room.roomUrl != None:
@@ -498,15 +530,15 @@ def getAllRoomList():
     roomList = []
 
     if roomWithUrlList:
-        for user in roomWithUrlList:
+        for room in roomWithUrlList:
            # if follower.liveRoom == None:
            roomList.append({
-               'uid':user.uid,
-               'name':user.nickname,
-               'roomImage':user.roomImage,
-               'roomUrl':user.roomUrl,
-               'roomName':user.roomName,
-               'roomDescription':user.introduction
+               'uid':room.uid,
+               'name':room.name,
+               'roomImage':room.roomImage,
+               'roomUrl':room.roomUrl,
+               'roomName':room.roomName,
+               'roomDescription':room.introduction
            })
     else:
         resp_data['code'] = 201
@@ -787,7 +819,41 @@ def postBarrange():
 
 
 
+
     return jsonify(resp)
+
+
+@route_admin.route("/searchRoomListByName", methods=["GET", "POST"])
+def searchRoomListByName():
+    resp_data = {}
+    req = request.values
+    #模糊查找
+    query = Room.query
+    rule = or_(Room.roomName.ilike("%{0}%".format(req['keyword'])),
+               )
+    rooms = query.filter(rule)
+    searchResult = rooms.order_by(Room.roomWatchingNumber.desc()).all()
+
+    #生成返回对象
+    targetRoomList = []
+    for room in searchResult:
+        targetRoomList.append({
+            'uid': room.uid,
+            'name': room.name,
+            'roomUrl': room.roomUrl,
+            'roomName': room.roomName,
+            'roomDescription': room.roomDescription
+        })
+
+    if targetRoomList:
+        resp_data = {'code': 200, 'msg': 'sucuess', 'data': {}}
+        resp_data['data'] = targetRoomList
+    else:
+        resp_data['code'] = 201
+        resp_data['msg']= "not follower's live Room at all "
+        return resp_data
+    return resp_data
+
 
 
 @route_admin.route("/login",methods = [ "GET","POST" ])
@@ -797,7 +863,6 @@ def login():
 
     userName = req['userName'] if 'userName' in req else ''
     password = req['password'] if 'password' in req else ''
-
 
     result = User.query.filter_by(userName=userName).first()
     return true

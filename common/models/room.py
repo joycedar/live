@@ -1,6 +1,8 @@
 # coding: utf-8
 from flask_sqlalchemy import SQLAlchemy
-from application import db
+
+
+db = SQLAlchemy()
 
 
 
@@ -15,3 +17,6 @@ class Room(db.Model):
     roomId = db.Column(db.BigInteger, primary_key=True, info='??uid')
     roomWatchingNumber = db.Column(db.Integer, server_default=db.FetchedValue(), info='????')
     watchingList = db.Column(db.LargeBinary, info='????')
+    sensitiveWord = db.Column(db.LargeBinary)
+    name = db.Column(db.String(11))
+    roomDescription = db.Column(db.String(100))
