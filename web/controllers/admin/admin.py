@@ -19,7 +19,7 @@ import json
 
 route_admin = Blueprint( 'admin_page',__name__ )
 
-@route_admin.route( "/login",methods = [ "GET" ] )
+@route_admin.route( "/login",methods = [ "GET","POST" ] )
 def llogin():
 
     resp = {'code': 200, 'msg': '登录成功', 'data': {}}
@@ -27,6 +27,8 @@ def llogin():
     login_name = req['login_name'] if 'login_name' in req else ''
     login_pwd = req['login_pwd'] if 'login_pwd' in req else ''
 
+    print("什么情况🌹")
+    print(login_name)
     info = User.query.filter_by( nickname = login_name ).first()
 
     if not info:
@@ -39,12 +41,15 @@ def llogin():
         resp['msg'] = "请输入正确的密码"
         return jsonify(resp)
 
-    if info.status != 3:
+    if info.status != 1:
         resp['code'] = -1
         resp['msg'] = "账号已被禁用，请联系管理员处理"
         return jsonify(resp)
 
-    resp['data'] = info
+    resp['data'] = {
+        'name':info.nickname,
+        'uid':str(info.uid)
+    }
     return jsonify(resp)
 
 @route_admin.route( "/analysis",methods = [ "GET","POST" ] )
@@ -130,7 +135,7 @@ def deleteAccount():
 def getUserInfoById():
     resp_data = {'code': 200, 'msg': '操作成功', 'data': {}}
     req = request.values
-    uid = req['uid']
+    uid = int(req['uid'])
     userList = User.query.filter_by(uid=uid,status=1).first()
 
     if userList.follows != None :
@@ -402,16 +407,16 @@ def getAllUserListForRecommend():
     resp_data = {'code': 200, 'msg': 'sucess for getAllUserListForRecommend'}
     req = request.values
     print(req)
-    uid = req['uid']
+    uid = int(req['uid'])
     print(uid)
     userList = User.query.order_by(User.fansNumber.desc()).all()
+
     targetUserInfoList = []
-
-    #获取自己关注的列表
     user = User.query.filter_by(uid=uid).first()
-    followerUids = json.loads(user.follows)
-
-
+    print(user.follows)
+    followerUids = []
+    if user.follows:
+        followerUids = json.loads(user.follows)
     if userList:
         for user in userList :
             if user.uid == uid:
@@ -419,12 +424,12 @@ def getAllUserListForRecommend():
             if user.uid in followerUids:
                 continue
             targetUserInfoList.append({
-                'uid':user.uid,
+                'uid':str(user.uid),
                 'name': user.nickname,
                 'introduction': user.introduction,
                 'avatarUrl': user.avatar
             })
-    resp_data['data'] = targetUserInfoList
+        resp_data['data'] = targetUserInfoList
     return jsonify(resp_data)
 
 
@@ -482,7 +487,9 @@ def getAllRoomList():
 
     allRoomListWithCCTV = Room.query.filter(Room.status != 3)
     allRoomList = allRoomListWithCCTV.order_by(Room.roomWatchingNumber.desc()).all()
-
+    print("🌸")
+    print(allRoomListWithCCTV)
+    print(allRoomList)
 
     roomWithUrlList = []
     for room in allRoomList:
@@ -587,13 +594,10 @@ def createLiveRoombyUid():
     uid = req['uid']
 
     roomUrl = req['roomUrl']
-    roomImage = req['roomIamge']
-    roomImage = json.dump(roomImage)
     roomName = req['roomName']
 
     user = User.query.filter_by(uid = uid).first()
     user.roomUrl = roomUrl
-    user.roomImage = roomImage
     user.roomName = roomName
 
     db.session.add(user)
@@ -880,7 +884,6 @@ def createRoom():
     uid = req['uid'] if 'uid' in req else ''
     roomName = req['roomName'] if 'roomName' in req else ''
     roomDescrption = req['roomDescrption'] if 'roomDescrption' in req else ''
-    roomUrl = ""
     is_mult_select = req['is_mult_select'] if 'is_mult_select' in req else ''
 
     groupVote = GroupVoteRecord()
