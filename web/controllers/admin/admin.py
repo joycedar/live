@@ -27,16 +27,6 @@ def llogin():
     login_name = req['login_name'] if 'login_name' in req else ''
     login_pwd = req['login_pwd'] if 'login_pwd' in req else ''
 
-    if  login_name is None or len( login_name ) < 1:
-        resp['code'] = -1
-        resp['msg'] = "请校验输入格式"
-        return jsonify( resp )
-
-    if  login_pwd is None or len( login_pwd ) < 1:
-        resp['code'] = -1
-        resp['msg'] = "请校验输入格式"
-        return jsonify(resp)
-
     info = User.query.filter_by( nickname = login_name ).first()
 
     if not info:
@@ -54,6 +44,7 @@ def llogin():
         resp['msg'] = "账号已被禁用，请联系管理员处理"
         return jsonify(resp)
 
+    resp['data'] = info
     return jsonify(resp)
 
 @route_admin.route( "/analysis",methods = [ "GET","POST" ] )
@@ -815,11 +806,6 @@ def postBarrange():
     barrage = req['barrage'] if 'barrage' in req else ''
     #实现敏感词过滤,实现
     resp['code'] = 200
-
-
-
-
-
     return jsonify(resp)
 
 
@@ -855,14 +841,32 @@ def searchRoomListByName():
     return resp_data
 
 
-
-@route_admin.route("/login",methods = [ "GET","POST" ])
-def login():
-    resp = {}
+@route_admin.route( "/register",methods =  ["GET","POST"] )
+def register():
+    resp = { 'code':200,'msg':'操作成功~','data':{} }
     req = request.values
 
-    userName = req['userName'] if 'userName' in req else ''
+    name = req['name'] if 'name' in req else ''
     password = req['password'] if 'password' in req else ''
 
-    result = User.query.filter_by(userName=userName).first()
-    return true
+    user_info  = User()
+
+    user_info.nickname = name
+    user_info.password = password
+
+    db.session.add( user_info )
+    db.session.commit()
+
+    return jsonify(resp)
+
+
+@route_admin.route( "/getUserInfoByNameAndPasword",methods =  ["GET","POST"] )
+def getUserInfoByNameAndPasword():
+    resp = { 'code':200,'msg':'操作成功~','data':{} }
+    req = request.values
+    name = req['name'] if 'name' in req else ''
+    password = req['password'] if 'password' in req else ''
+    user_info = User.query.filter_by(nickname = name,password=password).first()
+
+    resp['data']=user_info
+    return jsonify(resp)
