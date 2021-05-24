@@ -873,7 +873,7 @@ def getUserInfoByNameAndPasword():
 
 
 @route_admin.route( "/createRoom",methods = ["POST" ] )
-def postVote():
+def createRoom():
     resp = {}
     req = request.values
 
@@ -889,7 +889,6 @@ def postVote():
     groupVote.topic = topic
     groupVote.options = options
     groupVote.is_mult_select = is_mult_select
-
 
     db.session.add(groupVote)
     db.session.commit()
