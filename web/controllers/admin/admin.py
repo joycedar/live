@@ -870,3 +870,28 @@ def getUserInfoByNameAndPasword():
 
     resp['data']=user_info
     return jsonify(resp)
+
+
+@route_admin.route( "/createRoom",methods = ["POST" ] )
+def postVote():
+    resp = {}
+    req = request.values
+
+    uid = req['uid'] if 'uid' in req else ''
+    roomName = req['roomName'] if 'roomName' in req else ''
+    roomDescrption = req['roomDescrption'] if 'roomDescrption' in req else ''
+    roomUrl = ""
+    is_mult_select = req['is_mult_select'] if 'is_mult_select' in req else ''
+
+    groupVote = GroupVoteRecord()
+
+    groupVote.group_id = group_id
+    groupVote.topic = topic
+    groupVote.options = options
+    groupVote.is_mult_select = is_mult_select
+
+
+    db.session.add(groupVote)
+    db.session.commit()
+    resp = {'code': 200, 'msg': 'sucess to creat groupVote', 'data': {}}
+    return jsonify(resp)
